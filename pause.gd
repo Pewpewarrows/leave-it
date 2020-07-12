@@ -20,3 +20,7 @@ func _on_Resume_pressed() -> void:
 
 func _on_Quit_pressed() -> void:
 	get_tree().quit()
+
+
+func _on_Volume_value_changed(value: float) -> void:
+	Events.emit_signal("volume_changed", value)

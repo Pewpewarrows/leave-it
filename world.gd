@@ -5,6 +5,7 @@ var current_scene: Node = null
 
 func _ready() -> void:
 	var _rc := Events.connect("level_completed", self, "_on_Events_level_completed")
+	_rc = Events.connect("volume_changed", self, "_on_Events_volume_changed")
 #	var root: Viewport = get_tree().get_root()
 #	current_scene = root.get_child(root.get_child_count() - 1)
 #	current_scene = root.get_node("World")
@@ -56,3 +57,7 @@ func _on_Events_level_completed(level_name: String) -> void:
 			goto_scene("res://level0.tscn")
 		"level0":
 			goto_scene("res://game_over.tscn")
+
+
+func _on_Events_volume_changed(volume: float) -> void:
+	$"Background Music".set_volume_db(linear2db(volume))

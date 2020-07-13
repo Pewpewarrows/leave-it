@@ -25,4 +25,4 @@ func _process(_delta: float):
 
 
 func win() -> void:
-	Events.emit_signal("level_completed", "level0")
+	Events.emit_signal("level_completed", get_name())

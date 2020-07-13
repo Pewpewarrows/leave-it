@@ -55,7 +55,7 @@ func _on_Events_level_completed(level_name: String) -> void:
 	match level_name:
 		"title":
 			goto_scene("res://level0.tscn")
-		"level0":
+		"Level 0":
 			goto_scene("res://game_over.tscn")
 
 

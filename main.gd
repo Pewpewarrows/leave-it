@@ -14,27 +14,49 @@
 # 12. optional built-in virtual _init method
 # 13. built-in virtual _ready method
 # 14. remaining built-in virtual methods (_enter_tree, _exit_tree, _process, _physics_process, _input, _unhandled_input, _draw, _notification)
-# 15. public methods
-# 16. private methods
+# 15. static methods
+# 16. public methods
+# 17. private methods
 
 extends Node
 
+# Configure initial game setup.
+
 
 func _ready() -> void:
-	OS.set_window_title("Leave It!")
-	center_window()
+	OS.set_window_title(GameState.TITLE)
+	Utils.center_window()
+	# TODO: setup the global and dock menus (macOS), and taskbar menu (windows)
+	# TODO: other "being a good platform-specific citizen" customizations
 
 
-func _notification(what):
+func _notification(what) -> void:
 	match what:
 		MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 			get_tree().quit() # default behavior
+			# TODO: maybe route this through quit event handled by World as well?
 			# TODO: decide what to do on mobile
-
-
-func center_window() -> void:
-	# var screen_size := OS.get_screen_size(screen=0)
-	# var window_size := OS.get_window_size()
-
-	# OS.set_window_position(screen_size * 0.5 - window_size * 0.5)
-	pass
+		MainLoop.NOTIFICATION_WM_FOCUS_OUT:
+			# TODO: reduce to 30 FPS cap?
+			pass
+		MainLoop.NOTIFICATION_WM_FOCUS_IN:
+			# TODO: restore original FPS cap?
+			pass
+		MainLoop.NOTIFICATION_CRASH:
+			# TODO: custom crash reporter
+			pass
+		# TODO: macOS behavior of these two
+		MainLoop.NOTIFICATION_WM_ABOUT:
+			pass
+		MainLoop.NOTIFICATION_OS_IME_UPDATE:
+			pass
+		# TODO: iOS behavior of this one
+		MainLoop.NOTIFICATION_OS_MEMORY_WARNING:
+			pass
+		# TODO: Android behavior of these three
+		MainLoop.NOTIFICATION_WM_GO_BACK_REQUEST:
+			pass
+		MainLoop.NOTIFICATION_APP_RESUMED:
+			pass
+		MainLoop.NOTIFICATION_APP_PAUSED:
+			pass

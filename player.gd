@@ -1,6 +1,7 @@
+class_name Player
 extends Node2D
 
-onready var ray = $RayCast2D
+onready var ray = $RayCast2D as RayCast2D
 
 var speed = 512 # big number because it's multiplied by delta
 var tile_size = 64 # size in pixels of tiles on the grid
@@ -34,7 +35,12 @@ func _process(delta):
 		last_position = position # record the player's current idle position
 		target_position += movedir * tile_size # if key is pressed, get new target (also shifts to moving state)
 
+	# TODO: use move_and_slide?
 	animate_player(movedir)
+
+
+func is_idle() -> bool:
+	return position == target_position
 
 
 # GET DIRECTION THE PLAYER WANTS TO MOVE
@@ -56,20 +62,21 @@ func get_movedir():
 
 func animate_player(direction: Vector2) -> void:
 	var animation: String
-	
+	var sprite := $Sprite as AnimatedSprite
+
 	if direction != Vector2.ZERO:
 		# gradually update last_direction to counteract the bounce of the analog stick
 		last_direction = (0.5 * last_direction) + (0.5 * direction)
-		
+
 		# Choose walk animation based on movement direction
 		animation = animation_direction(last_direction) + "_walk"
 	else:
 		# Choose idle animation based on last movement direction and play it
 		animation = animation_direction(last_direction) + "_idle"
-	
-	# TODO: this still isn't playing the walk animations
-	if $Sprite.animation != animation:
-		$Sprite.play(animation)
+
+	# TODO: this still isn't playing the walk animations when tapping movement keys instead of holding them down
+	if sprite.animation != animation:
+		sprite.play(animation)
 
 
 func animation_direction(direction: Vector2):

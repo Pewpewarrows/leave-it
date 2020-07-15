@@ -1,63 +1,50 @@
-extends Node2D
+extends WorldPort2D
 
-var current_scene: Node = null
+# Active main scene and background audio.
 
 
 func _ready() -> void:
-	var _rc := Events.connect("level_completed", self, "_on_Events_level_completed")
-	_rc = Events.connect("volume_changed", self, "_on_Events_volume_changed")
-#	var root: Viewport = get_tree().get_root()
-#	current_scene = root.get_child(root.get_child_count() - 1)
-#	current_scene = root.get_node("World")
-#	current_scene = get_child(get_child_count() - 1)
-	goto_scene("res://title.tscn")
+	_connect_event("quit_requested")
+	_connect_event("scene_completed")
+	_connect_event("volume_changed")
+
+	var rc := change_scene("res://title.tscn")
+	if rc != OK:
+		pass # TODO: raise hell
 
 
 func restart_game() -> void:
+	# TODO: collision with class var, and test that it works?
 	var currentScene := get_tree().get_current_scene().get_filename()
-	print(currentScene) # TODO: debug only
+	print_debug("restarting game with scene %s" % currentScene)
 	var _rc := get_tree().change_scene(currentScene)
+	# TODO: reset GameState?
 
 
-func goto_scene(path: String) -> void:
-	# This function will usually be called from a signal callback,
-	# or some other function in the current scene.
-	# Deleting the current scene at this point is
-	# a bad idea, because it may still be executing code.
-	# This will result in a crash or unexpected behavior.
-
-	# The solution is to defer the load to a later time, when
-	# we can be sure that no code from the current scene is running:
-
-	call_deferred("_deferred_goto_scene", path)
+func _connect_event(event_name) -> void:
+	var rc := Events.connect(event_name, self, "_on_Events_%s" % event_name)
+	if rc != OK:
+		pass # TODO: raise hell
 
 
-func _deferred_goto_scene(path: String) -> void:
-	# It is now safe to remove the current scene
-	if current_scene != null:
-		current_scene.free()
-
-	# Load the new scene.
-	var s := ResourceLoader.load(path)
-
-	# Instance the new scene.
-	current_scene = s.instance()
-
-	# Add it to the active scene, as child of root.
-#	get_tree().get_root().add_child(current_scene)
-	add_child(current_scene)
-
-	# Optionally, to make it compatible with the SceneTree.change_scene() API.
-#	get_tree().set_current_scene(current_scene)
+func _on_Events_quit_requested() -> void:
+	# TODO: maybe try to save
+	get_tree().quit()
 
 
-func _on_Events_level_completed(level_name: String) -> void:
-	match level_name:
-		"title":
-			goto_scene("res://level0.tscn")
+func _on_Events_scene_completed(scene_name: String) -> void:
+	var next_scene_name: String
+
+	match scene_name:
+		"Title":
+			next_scene_name = "res://level0.tscn"
 		"Level 0":
-			goto_scene("res://game_over.tscn")
+			next_scene_name = "res://game_over.tscn"
+
+	var rc := change_scene(next_scene_name)
+	if rc != OK:
+		pass # TODO: raise hell
 
 
 func _on_Events_volume_changed(volume: float) -> void:
-	$"Background Music".set_volume_db(linear2db(volume))
+	($"Background Music" as AudioStreamPlayer).set_volume_db(linear2db(volume))

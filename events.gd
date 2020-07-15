@@ -1,6 +1,10 @@
 extends Node
 
+# Collection of global events.
+
 # warning-ignore:unused_signal
-signal level_completed(level_name)
+signal quit_requested
 # warning-ignore:unused_signal
-signal volume_changed(level_name)
+signal scene_completed(scene_name)
+# warning-ignore:unused_signal
+signal volume_changed(volume)

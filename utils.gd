@@ -4,14 +4,15 @@ extends Node
 
 const INT_MAX := 9223372036854775807
 const MS_PER_SECOND := 1000
+const MAX_FPS := 420
 
 
-# Move the game window to the center of the current screen.
-static func center_window() -> void:
-	var screen_size := OS.get_screen_size()
-	var window_size := OS.get_window_size()
+# TODO
+static func dont_set_graphics_card_on_fire() -> void:
+	if OS.vsync_enabled:
+		return
 
-	OS.set_window_position((screen_size / 2) - (window_size / 2))
+	Engine.set_target_fps(MAX_FPS)
 
 
 # TODO
@@ -37,3 +38,54 @@ static func tile_name_for_position(position: Vector2, tile_map: TileMap) -> Stri
 		pass # TODO
 
 	return tile_map.tile_set.tile_get_name(tile_index)
+
+
+# TODO
+class Compass:
+	# points or winds
+	enum {NORTH, EAST, SOUTH, WEST}
+	# TODO: use these instead
+	enum {N, NbE, NNE, NEbN, NE, NEbE, ENE, EbN, E, EbS, ESE, SEbE, SE, SEbS, SSE, SbE, S, SbW, SSW, SWbS, SW, SWbW, WSW, WbS, W, WbN, WNW, NWbW, NW, NWbN, NNW, NbW}
+	# roses
+	enum {CARDINAL = 4, PRINCIPLE = 8, HALF = 16, QUARTER = 32}
+
+	var _heading: int
+
+	func _init(heading: int):
+		_heading = heading
+
+	# TODO
+	func relative() -> String:
+		match _heading:
+			NORTH:
+				return "up"
+			EAST:
+				return "right"
+			SOUTH:
+				return "down"
+			WEST:
+				return "left"
+
+		return "unknown"
+
+
+# TODO
+static func make_compass_for_direction(direction: Vector2, wind := Compass.CARDINAL) -> Compass:
+	# TODO: decide whether to normalize in here or outside
+#	direction = direction.normalized()
+
+	match wind:
+		Compass.CARDINAL:
+			if direction.y >= 0.707:
+				return Compass.new(Compass.SOUTH)
+			elif direction.y <= -0.707:
+				return Compass.new(Compass.NORTH)
+			elif direction.x <= -0.707:
+				return Compass.new(Compass.WEST)
+			elif direction.x >= 0.707:
+				return Compass.new(Compass.EAST)
+		_:
+			# TODO: unsupported
+			print_debug("unsupported wind %s, returning likely-wrong SOUTH as default" % wind)
+
+	return Compass.new(Compass.SOUTH)

@@ -22,10 +22,13 @@ extends Node
 
 # Configure initial game setup.
 
+const FOCUS_TARGET_FPS := Engine.target_fps
+
 
 func _ready() -> void:
 	OS.set_window_title(GameState.TITLE)
-	Utils.center_window()
+	OS.center_window()
+	Utils.dont_set_graphics_card_on_fire()
 	# TODO: setup the global and dock menus (macOS), and taskbar menu (windows)
 	# TODO: other "being a good platform-specific citizen" customizations
 
@@ -37,11 +40,9 @@ func _notification(what) -> void:
 			# TODO: maybe route this through quit event handled by World as well?
 			# TODO: decide what to do on mobile
 		MainLoop.NOTIFICATION_WM_FOCUS_OUT:
-			# TODO: reduce to 30 FPS cap?
-			pass
+			Engine.set_target_fps(30)
 		MainLoop.NOTIFICATION_WM_FOCUS_IN:
-			# TODO: restore original FPS cap?
-			pass
+			Engine.set_target_fps(FOCUS_TARGET_FPS)
 		MainLoop.NOTIFICATION_CRASH:
 			# TODO: custom crash reporter
 			pass

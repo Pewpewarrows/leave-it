@@ -29,8 +29,7 @@ func _process(delta):
 		if position.distance_to(last_position) >= tile_size: # if we've moved further than one space
 			position = target_position # snap the player to the intended position
 
-	# IDLE
-	if position == target_position:
+	if is_idle():
 		get_movedir()
 		last_position = position # record the player's current idle position
 		target_position += movedir * tile_size # if key is pressed, get new target (also shifts to moving state)
@@ -80,16 +79,4 @@ func animate_player(direction: Vector2) -> void:
 
 
 func animation_direction(direction: Vector2):
-#	var norm_direction = direction.normalized()
-	var norm_direction = direction
-
-	if norm_direction.y >= 0.707:
-		return "down"
-	elif norm_direction.y <= -0.707:
-		return "up"
-	elif norm_direction.x <= -0.707:
-		return "left"
-	elif norm_direction.x >= 0.707:
-		return "right"
-
-	return "down"
+	return Utils.make_compass_for_direction(direction).relative()

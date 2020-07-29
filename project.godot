@@ -10,6 +10,11 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Object",
+"class": "AtomicFile",
+"language": "GDScript",
+"path": "res://addons/godot-re-mi/atomic_file.gd"
+}, {
+"base": "Object",
 "class": "PauseStack",
 "language": "GDScript",
 "path": "res://pause_stack.gd"
@@ -19,15 +24,22 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://player.gd"
 }, {
-"base": "Node2D",
-"class": "WorldPort2D",
+"base": "Object",
+"class": "VerifiedFile",
 "language": "GDScript",
-"path": "res://worldport2d.gd"
+"path": "res://addons/godot-re-mi/verified_file.gd"
+}, {
+"base": "Object",
+"class": "WorldPort",
+"language": "GDScript",
+"path": "res://addons/godot-re-mi/worldport.gd"
 } ]
 _global_script_class_icons={
+"AtomicFile": "",
 "PauseStack": "",
 "Player": "",
-"WorldPort2D": ""
+"VerifiedFile": "",
+"WorldPort": ""
 }
 
 [application]
@@ -58,6 +70,10 @@ gdscript/warnings/unsafe_call_argument=true
 
 window/stretch/mode="2d"
 window/stretch/aspect="keep"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "godot-re-mi" )
 
 [input]
 

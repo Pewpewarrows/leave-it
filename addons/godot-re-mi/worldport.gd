@@ -1,10 +1,17 @@
-class_name WorldPort2D
-extends Node2D
+tool
+class_name WorldPort
+extends Object
 
 var current_scene: Node
 
+var _port: Node
+
 # TODO
 # offers an equivalent of the SceneTree.change_scene() API
+
+
+func _init(port: Node) -> void:
+	_port = port
 
 
 # TODO
@@ -39,14 +46,15 @@ func _deferred_change_scene(path: String) -> int:
 		return ERR_CANT_OPEN
 
 	current_scene = scene.instance()
-	add_child(current_scene)
+	_port.add_child(current_scene)
 
 	# TODO: check if instance successful, ERR_CANT_CREATE
 
-	var is_root: bool = (get_tree().get_root() == self)
+	var is_root: bool = (_port.get_tree().get_root() == _port)
 
 	if is_root:
 		# stay compatible with SceneTree.change_scene()
-		get_tree().set_current_scene(current_scene)
+		_port.get_tree().set_current_scene(current_scene)
 
 	return OK
+

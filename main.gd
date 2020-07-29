@@ -23,6 +23,7 @@ extends Node
 # Configure initial game setup.
 
 const FOCUS_TARGET_FPS := Engine.target_fps
+const UNFOCUSED_FPS := 30
 
 
 func _ready() -> void:
@@ -40,7 +41,8 @@ func _notification(what) -> void:
 			# TODO: maybe route this through quit event handled by World as well?
 			# TODO: decide what to do on mobile
 		MainLoop.NOTIFICATION_WM_FOCUS_OUT:
-			Engine.set_target_fps(30)
+			if UNFOCUSED_FPS < FOCUS_TARGET_FPS:
+				Engine.set_target_fps(UNFOCUSED_FPS)
 		MainLoop.NOTIFICATION_WM_FOCUS_IN:
 			Engine.set_target_fps(FOCUS_TARGET_FPS)
 		MainLoop.NOTIFICATION_CRASH:
